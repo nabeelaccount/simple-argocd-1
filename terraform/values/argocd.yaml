@@ -1,0 +1,9 @@
+---
+global:
+  image:
+    tag: "v2.6.6"
+
+# Use Ingress and terminate HTTPS at the Ingress level, not application level (ArgoCD)
+server:
+  extraArgs:
+    - --insecure
