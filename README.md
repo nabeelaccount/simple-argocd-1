@@ -2,7 +2,11 @@
 
 ArgoCD is a Continous Delivery (CD) tool which monitors an ops git repository for any changes to its image tags/version. Once a change is detected, ArgoCD will apply the change to the cluster.
 
+This is the ops repository which will emulate the typical experience of a Platform/DevOps Engineer experience.
+
 ## Getting started
+
+### Setting up Cluster
 
 Ensure you have a running Kubernetes cluster. The changes demonstrated here are based on running a single Kubernetes node using Docker Desktop. 
 
@@ -20,7 +24,7 @@ Approve the changes if they meet your requirements.
 
 Extract the initial ArgoCD password
 ```sh
-kubectl get secrets -n argocd argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 --decod
+kubectl get secrets -n argocd argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 --decode
 ```
 Use this password alongside the user `admin` as the intial credentials for ArgoCD
 
@@ -30,3 +34,10 @@ kubectl -n argocd port-forward svc/argocd-server 8080:80
 ```
 
 Now access the console on your browser on `localhost:8080`
+
+
+### Deploying first ArgoCD application
+Deploying a simple application pointing to Kubernetes manifests
+```sh
+kubectl apply -f 1-example/application.yaml
+```

@@ -1,0 +1,29 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-app
+  namespace: argocd # namespace where ArgoCD is installed
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io # ensure resources are cleaned up when the application is deleted
+spec:
+  project: default # logical grouping of applications
+  source: # This is the path to the Kubernetes application source code in the git repository
+    repoURL: https://github.com/nabeelaccount/simple-argocd-2.git
+    targetRevision: HEAD # branch or tag app exists in
+    path: my-app # path to the application manifests in the git repository
+  # This is the destination cluster and namespace where the application will be deployed
+  destination:
+    server: https://kubernetes.default.svc
+
+# Setting synch policy to automated will allow ArgoCD to automatically apply changes
+  syncPolicy:
+    automated:
+      prune: true # allow pruning of resources that are no longer defined in the git repository
+      selfHeal: true # allow ArgoCD to automatically fix state drift (i.e., if a resource is changed manually/outside of ArgoCD)
+      allowEmpty: false
+    syncOptions:
+      - Validate=true # *Default* validate manifests before applying
+      - CreateNamespace=false # *Default* ensure namespace explicicitly created in the git repository
+      - PrunePropagationPolicy=foreground # *Default* use foreground pruning to delete resources
+      - PruneLast=true # *Default* prune resources last after all other resources are synced
