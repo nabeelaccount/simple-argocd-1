@@ -26,8 +26,12 @@ echo $tmp_dir
 # Clone GitHub repo
 git clone git@github.com:nabeelaccount/simple-argocd-2.git $tmp_dir
 
-# Update image tag
-sed -i '' -e "s/$docker_account\/nginx:.*/$docker_account\/nginx:$new_ver/g" $tmp_dir/my-app/1-deployment.yaml
+# Update image tag in all deployment.yaml files under environments/staging
+find "$tmp_dir/environments/staging" -type f -name "deployment.yaml" | while read -r file; do
+  echo "Updating $file"
+  sed -i '' -e "s|$docker_account/nginx:.*|$docker_account/nginx:$new_ver|g" "$file"
+done
+
 
 # Commit and push
 cd $tmp_dir
